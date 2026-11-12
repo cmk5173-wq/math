@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <!-- 휴대폰과 태블릿 화면 크기에 자동으로 맞추기 위한 설정 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인공지능 기초 - 선택과목 안내</title>
+  <style>
+    /* =========================================================
+       1. 전체 화면 및 색상 설정 (여기서 배경색이나 글자 크기를 바꿀 수 있습니다)
+       ========================================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #FEF9E7; /* 연한 노란색 배경 */
+      color: #1F2937;            /* 읽기 편한 진한 회색 글씨 */
+      font-family: "Pretendard", "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", sans-serif;
+      font-size: 18px;           /* 크고 읽기 쉬운 본문 글자 크기 */
+      line-height: 1.7;
+      padding: 32px 16px 60px;
+    }
+
+    /* 전체 내용을 가운데에 모으는 틀 */
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    /* =========================================================
+       2. 상단 제목 영역 스타일
+       ========================================================= */
+    .header-box {
+      background-color: #FFFFFF;
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-align: center;
+      margin-bottom: 24px;
+      border-top: 8px solid #F59E0B; /* 포인트 노란색 상단 띠 */
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      background-color: #FEF3C7;
+      color: #B45309;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .header-box h1 {
+      font-size: 2.1rem;         /* 눈에 잘 띄는 큰 제목 */
+      font-weight: 800;
+      color: #111827;
+      line-height: 1.35;
+      margin-bottom: 14px;
+      word-break: keep-all;
+    }
+
+    .header-box p {
+      font-size: 1.15rem;
+      color: #4B5563;
+      word-break: keep-all;
+    }
+
+    /* =========================================================
+       3. 흰색 내용 상자(카드) 공통 스타일
+       ========================================================= */
+    .card {
+      background-color: #FFFFFF; /* 흰색 내용 상자 */
+      border-radius: 18px;
+      padding: 30px 32px;
+      margin-bottom: 22px;
+      border: 1px solid #F3E8C8;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .card h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #FEF3C7;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 목록(글머리 기호) 스타일 */
+    .info-list {
+      list-style: none;
+    }
+
+    .info-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 12px;
+      word-break: keep-all;
+    }
+
+    .info-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-list li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #D97706;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       4. 수업 활동 사진 배치 스타일 (PC 3열 / 휴대폰 1열)
+       ========================================================= */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* PC/태블릿: 한 줄에 3장 배치 */
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .photo-item {
+      background-color: #FFFDF7;
+      border: 1px solid #F3E8C8;
+      border-radius: 14px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* 사진 비율이 찌그러지지 않게 4:3 비율로 통일 */
+    .photo-item img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover; /* 비율을 유지하면서 칸에 맞춰 깔끔하게 채움 */
+      display: block;
+      background-color: #F9FAFB;
+    }
+
+    /* 사진 파일이 아직 폴더에 없을 때 대신 보이는 안내 박스 */
+    .photo-placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background-color: #FEF9E7;
+      color: #92400E;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      padding: 12px;
+    }
+
+    .photo-caption {
+      padding: 12px 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1F2937;
+      background-color: #FFFFFF;
+    }
+
+    /* =========================================================
+       5. 휴대폰(모바일) 화면 최적화 설정
+       ========================================================= */
+    @media (max-width: 680px) {
+      body {
+        font-size: 16.5px;
+        padding: 20px 12px 44px;
+      }
+
+      .header-box {
+        padding: 30px 20px;
+      }
+
+      .header-box h1 {
+        font-size: 1.65rem;
+      }
+
+      .card {
+        padding: 24px 20px;
+      }
+
+      .card h2 {
+        font-size: 1.25rem;
+      }
+
+      /* 휴대폰에서는 사진을 한 줄에 한 장씩 표시 */
+      .photo-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+
+    <!-- [상단 제목 영역] 제목과 한 줄 소개를 수정하려면 아래 글자를 바꾸세요 -->
+    <header class="header-box">
+      <span class="badge">선택과목 안내</span>
+      <h1>인공지능 기초, 함께 배워볼까요?</h1>
+      <p>생활 속 인공지능을 이해하고 직접 체험하는 수업입니다.</p>
+    </header>
+
+    <!-- [1번 상자] 과목 소개 -->
+    <section class="card">
+      <h2>📘 과목 소개</h2>
+      <ul class="info-list">
+        <li>인공지능의 기본 원리를 배웁니다.</li>
+        <li>데이터를 활용하고 인공지능으로 문제를 해결하는 방법을 알아봅니다.</li>
+      </ul>
+    </section>
+
+    <!-- [2번 상자] 수업 활동 미리보기 및 사진 3장 -->
+    <section class="card">
+      <h2>💡 수업 활동 미리보기</h2>
+      <ul class="info-list">
+        <li>생활 속 인공지능 사례 찾기</li>
+        <li>간단한 인공지능 모델 만들기</li>
+        <li>인공지능을 활용한 프로젝트 진행하기</li>
+      </ul>
+
+      <!-- 
+        [사진 설정 방법]
+        - 이 index.html 파일과 같은 폴더에 photo1, photo2, photo3 파일을 넣어주세요.
+        - 확장자는 .jpg, .jpeg, .png 모두 자동으로 인식합니다.
+        - 다른 파일 이름을 쓰고 싶다면 아래 src="photo1.jpg" 부분의 이름만 바꾸면 됩니다.
+      -->
+      <div class="photo-grid">
+        <figure class="photo-item">
+          <img src="photo1.jpg" alt="인공지능 체험 활동 모습" onerror="findImageFile(this)">
+          <figcaption class="photo-caption">인공지능 체험</figcaption>
+        </figure>
+
+        <figure class="photo-item">
+          <img src="photo2.jpg" alt="모둠 프로젝트 활동 모습" onerror="findImageFile(this)">
+          <figcaption class="photo-caption">모둠 프로젝트</figcaption>
+        </figure>
+
+        <figure class="photo-item">
+          <img src="photo3.jpg" alt="결과 발표 활동 모습" onerror="findImageFile(this)">
+          <figcaption class="photo-caption">결과 발표</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- [3번 상자] 이런 학생에게 추천해요 -->
+    <section class="card">
+      <h2>🙋 이런 학생에게 추천해요</h2>
+      <ul class="info-list">
+        <li>인공지능과 새로운 기술이 궁금한 학생</li>
+        <li>직접 만들고 체험하는 활동을 좋아하는 학생</li>
+        <li>기술을 활용해 문제를 해결해보고 싶은 학생</li>
+      </ul>
+    </section>
+
+    <!-- [4번 상자] 수강 전 알아두기 -->
+    <section class="card">
+      <h2>📌 수강 전 알아두기</h2>
+      <ul class="info-list">
+        <li>코딩을 처음 접하는 학생도 참여할 수 있습니다.</li>
+        <li>실습과 프로젝트 중심으로 수업합니다.</li>
+        <li>평가 방법은 수업 시작 시 안내합니다.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- 같은 폴더의 jpg, jpeg, png 사진 파일을 자동으로 찾아주는 간단한 스크립트 -->
+  <script>
+    function findImageFile(img) {
+      const extensions = ['.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG'];
+
+      // 처음 실패했을 때 확장자를 제외한 기본 파일명(예: photo1)을 저장
+      if (!img.dataset.baseName) {
+        const currentSrc = img.getAttribute('src');
+        const dotIndex = currentSrc.lastIndexOf('.');
+        img.dataset.baseName = dotIndex !== -1 ? currentSrc.substring(0, dotIndex) : currentSrc;
+        img.dataset.tryIndex = '0';
+      }
+
+      let index = parseInt(img.dataset.tryIndex, 10);
+
+      // 다음 확장자(.jpeg, .png 등)를 순서대로 시도
+      while (index < extensions.length) {
+        const nextSrc = img.dataset.baseName + extensions[index];
+        index++;
+        img.dataset.tryIndex = index.toString();
+
+        if (img.getAttribute('src') !== nextSrc) {
+          img.src = nextSrc;
+          return;
+        }
+      }
+
+      // 세 가지 확장자 모두 폴더에 없을 경우 깨진 아이콘 대신 안내 문구 표시
+      img.onerror = null;
+      img.style.display = 'none';
+      const guide = document.createElement('div');
+      guide.className = 'photo-placeholder';
+      guide.innerHTML = '<strong>사진 준비 중</strong><span>(' + img.dataset.baseName + '.jpg / jpeg / png)</span>';
+      img.parentNode.insertBefore(guide, img);
+    }
+  </script>
+
+</body>
+</html>
